@@ -1,2 +1,25 @@
 <Layouts.app flash={@flash}>
+	<div class="columns is-centered">
+		<div class="column is-4">
+			<div id="modal-new-game" class="modal">
+				<div class="modal-background" />
+				<div class="modal-content">
+					<div class="box">
+						<div class="columns buttons are-large">
+							<div class="column">
+								<button class="button is-primary is-fullwidth">Public</button>
+							</div>
+							<div class="column">
+								<button class="button is-link is-fullwidth">Private</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button class="modal-close is-large" aria-label="close" phx-click={JS.remove_class("is-active", to: "#modal-new-game")} />
+			</div>
+			<button class="button is-primary is-large is-fullwidth" phx-click={JS.add_class("is-active", to: "#modal-new-game")}>
+				New Game
+			</button>
+		</div>
+	</div>
 </Layouts.app>
