@@ -18,6 +18,30 @@ defmodule TicTacToeExWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
+  attr(:id, :string, required: true)
+
+  slot(:inner_block, required: true)
+
+  def modal(%{id: id} = assigns) do
+    selector = "#" <> id
+
+    ~H"""
+    <div id={@id} class="modal">
+      <div class="modal-background" />
+      <div class="modal-content">
+        <div class="box">
+          {render_slot(@inner_block)}
+        </div>
+      </div>
+      <button
+        class="modal-close is-large"
+        aria-label="close"
+        phx-click={JS.remove_class("is-active", to: selector)}
+      />
+    </div>
+    """
+  end
+
   @doc """
   Renders flash notices.
 
@@ -63,8 +87,7 @@ defmodule TicTacToeExWeb.CoreComponents do
           <p>{msg}</p>
         </div>
         <div class="flex-1" />
-        <button type="button" class="group self-start cursor-pointer" aria-label={gettext("close")}>
-        </button>
+        <button type="button" class="group self-start cursor-pointer" aria-label={gettext("close")}></button>
       </div>
     </div>
     """
