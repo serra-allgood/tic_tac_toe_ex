@@ -18,6 +18,9 @@ defmodule TicTacToeExWeb.Router do
     pipe_through :browser
 
     get "/", HomeController, :index
+
+    resources "/games", GameController, only: [:create, :show]
+    live "/games/:game_id/live", GameLive
   end
 
   # Other scopes may use custom stacks.

@@ -3,15 +3,13 @@
 		<div class="column is-4">
 			<.modal id="modal-new-game">
 				<div class="columns buttons are-large">
-					<%= for [visibility: visibility, color: color] <- @button_config do %>
-						<div class="column">
-							<.form method="post" action={~p"/games?visibility=#{visibility}"}>
-								<button type="submit" class={"button #{color} is-fullwidth"}>
-									{String.capitalize(visibility)}
-								</button>
-							</.form>
-						</div>
-					<% end %>
+					<div class="column" :for={[visibility: visibility, color: color] <- @button_config}>
+						<.form for={nil} method="post" action={~p"/games?visibility=#{visibility}"}>
+							<button type="submit" class={"button #{color} is-fullwidth"}>
+								{String.capitalize(visibility)}
+							</button>
+						</.form>
+					</div>
 				</div>
 			</.modal>
 			<button class="button is-primary is-large is-fullwidth" phx-click={JS.add_class("is-active", to: "#modal-new-game")}>
