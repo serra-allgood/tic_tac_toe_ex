@@ -11,7 +11,11 @@ defmodule TicTacToeEx.Repo.Migrations.CreateGames do
       timestamps(type: :utc_datetime)
     end
 
-    create unique_index(:games, :invite_code)
+    # When matchmaking, we're going to prioritize players who have been waiting the longest
+    # to start a game.
+    create index(:games, [asc: :inserted_at], where: "visibility = 'public' and is_full IS false")
+
+    create unique_index(:games, :invite_code, where: "is_full IS FALSE")
     create constraint(:games, :check_visibility, check: "visibility IN ('public', 'private')")
   end
 end

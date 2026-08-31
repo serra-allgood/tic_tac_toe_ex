@@ -8,12 +8,23 @@ defmodule TicTacToeEx.Games do
 
   alias TicTacToeEx.Games.Game
 
+  def find_public_game do
+    from(g in Game,
+      where: g.visibility == :public,
+      where: g.is_full == false,
+      order_by: [asc: g.inserted_at],
+      limit: 1,
+      lock: "FOR NO KEY UPDATE SKIP LOCKED"
+    )
+    |> Repo.one()
+  end
+
   def generate_invite_code do
     UUID.uuid4()
   end
 
   def get_by_invite_code!(invite_code) do
-    Repo.get_by!(Game, invite_code: invite_code)
+    Repo.get_by!(Game, invite_code: invite_code, is_full: false)
   end
 
   @doc """

@@ -4,11 +4,7 @@
 			<.modal id="modal-new-game">
 				<div class="columns buttons are-large">
 					<div class="column" :for={[visibility: visibility, color: color] <- @button_config}>
-						<.form for={nil} method="post" action={~p"/games?visibility=#{visibility}"}>
-							<button type="submit" class={"button #{color} is-fullwidth"}>
-								{String.capitalize(visibility)}
-							</button>
-						</.form>
+						<.link href={~p"/games?visibility=#{visibility}"} method="post" class={"button #{color} is-fullwidth"}>{String.capitalize(visibility)}</.link>
 					</div>
 				</div>
 			</.modal>
