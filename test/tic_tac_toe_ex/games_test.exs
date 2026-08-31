@@ -21,10 +21,10 @@ defmodule TicTacToeEx.GamesTest do
     end
 
     test "create_game/1 with valid data creates a game" do
-      valid_attrs = %{visibility: "some visibility", invite_code: "some invite_code"}
+      valid_attrs = %{visibility: :public, invite_code: "some invite_code"}
 
       assert {:ok, %Game{} = game} = Games.create_game(valid_attrs)
-      assert game.visibility == "some visibility"
+      assert game.visibility == :public
       assert game.invite_code == "some invite_code"
     end
 
@@ -34,10 +34,14 @@ defmodule TicTacToeEx.GamesTest do
 
     test "update_game/2 with valid data updates the game" do
       game = game_fixture()
-      update_attrs = %{visibility: "some updated visibility", invite_code: "some updated invite_code"}
+
+      update_attrs = %{
+        visibility: :private,
+        invite_code: "some updated invite_code"
+      }
 
       assert {:ok, %Game{} = game} = Games.update_game(game, update_attrs)
-      assert game.visibility == "some updated visibility"
+      assert game.visibility == :private
       assert game.invite_code == "some updated invite_code"
     end
 

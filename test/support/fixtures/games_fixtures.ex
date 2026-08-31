@@ -12,7 +12,7 @@ defmodule TicTacToeEx.GamesFixtures do
       attrs
       |> Enum.into(%{
         invite_code: "some invite_code",
-        visibility: "some visibility"
+        visibility: :public
       })
       |> TicTacToeEx.Games.create_game()
 
