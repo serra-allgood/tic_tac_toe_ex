@@ -1,14 +1,14 @@
 defmodule TicTacToeExWeb.GameController do
   use TicTacToeExWeb, :controller
 
-  alias TicTacToeEx.{Games, Games.Matchmake}
+  alias TicTacToeEx.{Games, Games.Matchmaker}
 
   def create(conn, %{"visibility" => visibility}) do
     visibility = String.to_existing_atom(visibility)
 
     with {:ok, game} <-
            then(visibility, fn
-             :public -> Matchmake.match_player()
+             :public -> Matchmaker.match_player()
              :private -> Games.create_game(%{visibility: visibility})
            end) do
       redirect(conn, to: ~p"/games/#{game.id}/live")

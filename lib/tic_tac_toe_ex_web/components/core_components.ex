@@ -23,7 +23,7 @@ defmodule TicTacToeExWeb.CoreComponents do
   slot(:inner_block, required: true)
 
   def modal(%{id: id} = assigns) do
-    selector = "#" <> id
+    assigns = assign(assigns, :selector, "#" <> id)
 
     ~H"""
     <div id={@id} class="modal">
@@ -36,7 +36,7 @@ defmodule TicTacToeExWeb.CoreComponents do
       <button
         class="modal-close is-large"
         aria-label="close"
-        phx-click={JS.remove_class("is-active", to: selector)}
+        phx-click={JS.remove_class("is-active", to: @selector)}
       />
     </div>
     """
