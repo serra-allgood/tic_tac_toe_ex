@@ -3,12 +3,15 @@
 		<div class="column is-4">
 			<.modal id="modal-new-game">
 				<div class="columns buttons are-large">
-					<div class="column">
-						<button class="button is-primary is-fullwidth">Public</button>
-					</div>
-					<div class="column">
-						<button class="button is-link is-fullwidth">Private</button>
-					</div>
+					<%= for [visibility: visibility, color: color] <- @button_config do %>
+						<div class="column">
+							<.form method="post" action={~p"/games?visibility=#{visibility}"}>
+								<button type="submit" class={"button #{color} is-fullwidth"}>
+									{String.capitalize(visibility)}
+								</button>
+							</.form>
+						</div>
+					<% end %>
 				</div>
 			</.modal>
 			<button class="button is-primary is-large is-fullwidth" phx-click={JS.add_class("is-active", to: "#modal-new-game")}>
