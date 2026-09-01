@@ -20,11 +20,18 @@ defmodule TicTacToeEx.Games do
   end
 
   def generate_invite_code do
-    UUID.uuid4()
+    slug = MnemonicSlugs.generate_slug(3)
+    query = from(g in Game, where: g.invite_code == ^slug, limit: 1)
+
+    if Repo.exists?(query) do
+      generate_invite_code()
+    else
+      slug
+    end
   end
 
-  def get_by_invite_code!(invite_code) do
-    Repo.get_by!(Game, invite_code: invite_code, is_full: false)
+  def get_by_invite_code(invite_code) do
+    Repo.get_by(Game, invite_code: invite_code, is_full: false)
   end
 
   @doc """

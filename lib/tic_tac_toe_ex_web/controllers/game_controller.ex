@@ -16,7 +16,7 @@ defmodule TicTacToeExWeb.GameController do
   end
 
   def show(conn, %{"id" => invite_code}) do
-    game = Games.get_by_invite_code!(invite_code)
+    game = Games.get_by_invite_code(invite_code)
 
     redirect(conn, to: ~p"/games/#{game.id}/live")
   end
