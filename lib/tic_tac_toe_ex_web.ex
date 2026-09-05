@@ -45,6 +45,10 @@ defmodule TicTacToeExWeb do
       import Plug.Conn
 
       unquote(verified_routes())
+
+      def get_user_id(conn) do
+        get_session(conn, :user_id) || UUID.uuid4()
+      end
     end
   end
 

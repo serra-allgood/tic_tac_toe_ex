@@ -15,6 +15,9 @@ defmodule TicTacToeEx.Application do
       {Phoenix.PubSub, name: TicTacToeEx.PubSub},
       # Start a worker by calling: TicTacToeEx.Worker.start_link(arg)
       # {TicTacToeEx.Worker, arg},
+      {Registry, keys: :unique, name: TicTacToeEx.GameRegistry},
+      {PartitionSupervisor,
+       child_spec: DynamicSupervisor, name: TicTacToeEx.DynamicGameSupervisors},
       # Start to serve requests, typically the last entry
       TicTacToeExWeb.Endpoint
     ]

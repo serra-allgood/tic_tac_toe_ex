@@ -4,9 +4,16 @@ defmodule TicTacToeEx.Games do
   """
 
   import Ecto.Query, warn: false
+
   alias TicTacToeEx.Repo
 
-  alias TicTacToeEx.Games.Game
+  alias TicTacToeEx.Games.{Game, GameCell, Player}
+
+  def create_player(attrs) do
+    %Player{}
+    |> Player.changeset(attrs)
+    |> Repo.insert()
+  end
 
   def find_public_game do
     from(g in Game,
@@ -31,7 +38,53 @@ defmodule TicTacToeEx.Games do
   end
 
   def get_by_invite_code(invite_code) do
-    Repo.get_by(Game, invite_code: invite_code, is_full: false)
+    game = Repo.get_by(Game, invite_code: invite_code, is_full: false)
+
+    case game do
+      nil -> {:error, :not_found}
+      _ -> {:ok, game}
+    end
+  end
+
+  def get_game_state(game_id) do
+    game =
+      from(g in Game, where: g.id == ^game_id, preload: [:game_cells, :players])
+      |> Repo.one()
+
+    case game do
+      nil -> {:error, :not_found}
+      _ -> {:ok, game}
+    end
+  end
+
+  def get_piece(game_id, user_id) do
+    from(gc in GameCell,
+      where: gc.game_id == ^game_id,
+      where: gc.user_id == ^user_id,
+      select: gc.piece,
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  def get_players(game_id) do
+    from(p in Player,
+      where: p.game_id == ^game_id,
+      select: p.user_id,
+      distinct: true
+    )
+    |> Repo.all()
+  end
+
+  def reload_game_cells(%Game{} = game) do
+    Repo.reload(game)
+    |> Repo.preload([:game_cells, :players])
+  end
+
+  def update_game_cell!(%GameCell{} = game_cell, attrs) do
+    game_cell
+    |> GameCell.changeset(attrs)
+    |> Repo.update!()
   end
 
   @doc """
@@ -76,9 +129,17 @@ defmodule TicTacToeEx.Games do
 
   """
   def create_game(attrs) do
-    %Game{}
-    |> Game.changeset(attrs)
-    |> Repo.insert()
+    Repo.transact(fn ->
+      game = Repo.insert!(Game.changeset(%Game{}, attrs))
+
+      for cell_id <- 1..9 do
+        Repo.insert!(GameCell.changeset(%GameCell{}, %{game_id: game.id, cell_id: cell_id}))
+      end
+
+      Repo.insert!(Player.changeset(%Player{}, Map.merge(attrs, %{game_id: game.id})))
+
+      {:ok, game}
+    end)
   end
 
   @doc """

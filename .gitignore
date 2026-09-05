@@ -1,3 +1,4 @@
+.DS_STORE
 .expert
 
 # The directory Mix will write compiled artifacts to.
@@ -36,4 +37,3 @@ tic_tac_toe_ex-*.tar
 # In case you use Node.js/npm, you want to ignore these.
 npm-debug.log
 /assets/node_modules/
-

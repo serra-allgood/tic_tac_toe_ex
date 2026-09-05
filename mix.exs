@@ -40,6 +40,7 @@ defmodule TicTacToeEx.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:uuid, "~> 1.0"},
       {:mnemonic_slugs, "~> 0.0"},
       {:oban, "~> 2.0"},
       {:igniter, "~> 0.6", only: [:dev, :test]},
