@@ -11,7 +11,6 @@ defmodule TicTacToeEx.Application do
       TicTacToeExWeb.Telemetry,
       TicTacToeEx.Repo,
       {DNSCluster, query: Application.get_env(:tic_tac_toe_ex, :dns_cluster_query) || :ignore},
-      {Oban, Application.fetch_env!(:tic_tac_toe_ex, Oban)},
       {Phoenix.PubSub, name: TicTacToeEx.PubSub},
       # Start a worker by calling: TicTacToeEx.Worker.start_link(arg)
       # {TicTacToeEx.Worker, arg},

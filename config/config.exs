@@ -7,14 +7,6 @@
 # General application configuration
 import Config
 
-config :tic_tac_toe_ex, Oban,
-  engine: Oban.Engines.Basic,
-  notifier: Oban.Notifiers.Postgres,
-  queues: [default: 10],
-  lifeline: [rescue_after: {2, :hours}],
-  pruner: [max_age: {1, :day}],
-  repo: TicTacToeEx.Repo
-
 config :tic_tac_toe_ex,
   ecto_repos: [TicTacToeEx.Repo],
   generators: [timestamp_type: :utc_datetime, binary_id: true]

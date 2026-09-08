@@ -25,7 +25,7 @@ mix assets.deploy                 # minify assets and generate phoenix digest
 ## Project architecture
 
 - The application follows the standard Phoenix layout created by `mix phx.new`: `lib/tic_tac_toe/` holds domain/application code, while `lib/tic_tac_toe_web/` holds the web layer.
-- `TicTacToe.Application` is the OTP supervision root. It starts `TicTacToe.Repo`, Oban, `Phoenix.PubSub`, and `TicTacToeWeb.Endpoint` under a `:one_for_one` supervisor.
+- `TicTacToe.Application` is the OTP supervision root. It starts `TicTacToe.Repo`, `Phoenix.PubSub`, and `TicTacToeWeb.Endpoint` under a `:one_for_one` supervisor.
 - `TicTacToeWeb` centralizes the web imports and route helpers (`:router`, `:controller`, `:html`, `:live_view`). Avoid scattering web concerns outside the `TicTacToeWeb` namespace.
 - `TicTacToe.Repo` is the shared Ecto repository for Postgres-backed data. Keep persistence logic in `TicTacToe.*` context modules rather than in controllers or LiveViews.
 - The current app is intentionally minimal but the project README describes the intended design: a Tic-Tac-Toe server with public queue matching, private invite games, per-game GenServer state, PubSub-driven LiveView updates, and database-backed rehydration when a game server restarts.

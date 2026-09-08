@@ -1,5 +1,4 @@
 import Config
-config :tic_tac_toe_ex, Oban, testing: :manual
 
 # Configure your database
 #

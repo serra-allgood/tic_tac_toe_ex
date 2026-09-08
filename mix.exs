@@ -42,7 +42,6 @@ defmodule TicTacToeEx.MixProject do
     [
       {:uuid, "~> 1.0"},
       {:mnemonic_slugs, "~> 0.0"},
-      {:oban, "~> 2.0"},
       {:igniter, "~> 0.6", only: [:dev, :test]},
       {:phoenix, "~> 1.8.13"},
       {:phoenix_ecto, "~> 4.5"},
