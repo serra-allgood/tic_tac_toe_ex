@@ -31,9 +31,7 @@ defmodule TicTacToeEx.Games.GameServer do
   end
 
   def place_piece(game_id, cell_id, piece) do
-    Logger.debug("Getting here")
     {:ok, _} = ensure_started(game_id)
-    Logger.debug("How about here")
     GenServer.cast(via(game_id), {:place_piece, cell_id, piece})
   end
 
@@ -46,21 +44,14 @@ defmodule TicTacToeEx.Games.GameServer do
 
   @impl true
   def init(game_id) do
-    Games.get_game_state(game_id)
+    {:ok, game} = Games.get_game_state(game_id)
+
+    {:ok, game}
   end
 
   @impl true
   def handle_cast({:place_piece, cell_id, piece}, game) do
-    game.game_cells
-    |> Enum.each(fn
-      %{cell_id: ^cell_id} = game_cell ->
-        Logger.debug("--------------------------Yeppers--------------------")
-        Games.update_game_cell!(game_cell, %{piece: piece})
-
-      _ ->
-        Logger.debug("----------------------Nopers----------------------")
-        nil
-    end)
+    {:ok, _} = Games.place_piece(game, cell_id, piece)
 
     @game_cell_placement[cell_id]
     |> Enum.each(fn server_id ->
@@ -68,8 +59,6 @@ defmodule TicTacToeEx.Games.GameServer do
     end)
 
     Phoenix.PubSub.broadcast(TicTacToeEx.PubSub, "game:#{game.id}", :piece_placed)
-
-    Logger.debug("--------------------------Yeppers-------------------------------")
 
     {:noreply, Games.reload_game_cells(game)}
   end

@@ -23,7 +23,6 @@ defmodule TicTacToeExWeb.GameSetup do
     socket =
       socket
       |> assign(:player_piece, player_piece)
-      |> assign(:user_id, user_id)
 
     {:cont, socket}
   end
@@ -33,10 +32,10 @@ defmodule TicTacToeExWeb.GameSetup do
 
     cond do
       not game.is_full ->
-        {:cont, assign(socket, :user_id, user_id)}
+        {:cont, socket}
 
       Enum.member?(Games.get_players(game.id), user_id) ->
-        {:cont, assign(socket, :user_id, user_id)}
+        {:cont, socket}
 
       true ->
         {:halt, redirect(socket, to: ~p"/not_playing")}

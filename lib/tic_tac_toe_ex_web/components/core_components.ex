@@ -19,14 +19,25 @@ defmodule TicTacToeExWeb.CoreComponents do
   alias Phoenix.LiveView.JS
 
   attr(:id, :string, required: true)
+  attr(:closeable, :boolean, default: true)
+  attr(:active, :boolean, default: false)
 
   slot(:inner_block, required: true)
 
-  def modal(%{id: id} = assigns) do
-    assigns = assign(assigns, :selector, "#" <> id)
+  def modal(%{id: id, active: active} = assigns) do
+    class =
+      if active do
+        "modal is-active"
+      else
+        "modal"
+      end
+    assigns =
+      assigns
+      |> assign(:selector, "#" <> id)
+      |> assign(:class, class)
 
     ~H"""
-    <div id={@id} class="modal">
+    <div id={@id} class={@class}>
       <div class="modal-background" />
       <div class="modal-content">
         <div class="box">
@@ -34,6 +45,7 @@ defmodule TicTacToeExWeb.CoreComponents do
         </div>
       </div>
       <button
+        :if={@closeable}
         class="modal-close is-large"
         aria-label="close"
         phx-click={JS.remove_class("is-active", to: @selector)}

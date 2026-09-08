@@ -7,6 +7,7 @@ defmodule TicTacToeEx.Repo.Migrations.CreateGames do
       add :visibility, :text, null: false
       add :invite_code, :text, null: false
       add :is_full, :boolean, default: false
+      add :current_turn, :text, default: "x"
 
       timestamps(type: :utc_datetime)
     end
@@ -17,5 +18,6 @@ defmodule TicTacToeEx.Repo.Migrations.CreateGames do
 
     create unique_index(:games, :invite_code, where: "is_full IS FALSE")
     create constraint(:games, :check_visibility, check: "visibility IN ('public', 'private')")
+    create constraint(:games, :check_current_turn, check: "current_turn IN ('x', 'o')")
   end
 end

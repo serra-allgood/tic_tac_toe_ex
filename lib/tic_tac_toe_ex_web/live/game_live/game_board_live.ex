@@ -19,11 +19,15 @@ defmodule TicTacToeExWeb.GameBoardLive do
 
   @impl true
   def handle_event("place_piece", %{"cell" => cell_id, "piece" => piece} = _params, socket) do
-    GameServer.place_piece(
-      socket.assigns.game.id,
+    %{game: game} = socket.assigns
+    piece = String.to_existing_atom(piece)
+    if game.current_turn == piece do
+      GameServer.place_piece(
+      game.id,
       String.to_integer(cell_id),
-      String.to_existing_atom(piece)
+      piece
     )
+    end
 
     {:noreply, socket}
   end
@@ -37,7 +41,27 @@ defmodule TicTacToeExWeb.GameBoardLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash}>
-      <h1 :if={not @game.is_full} class="title">Pending...</h1>
+      <.modal id="modal-pending-game" :if={not @game.is_full} closeable={false} active={true}>
+        <h3 class="title is-3 is-spaced">
+          You've created a {@game.visibility} game!
+        </h3>
+        <h5 :if={@game.visibility == :public} class="subtitle is-5">
+          Matchmaking in progress, waiting on another player to join...
+        </h5>
+        <div class="content">
+          Share the invite code <strong>{@game.invite_code}</strong>
+          <span :if={@game.visibility == :public}> if you can't wait!</span>
+        </div>
+      </.modal>
+      <div class="notification is-centered">
+        <h3 class="title is-3">
+          <%= if @game.current_turn == @player_piece do %>
+            Your turn!
+          <% else %>
+            Their turn...
+          <% end %>
+        </h3>
+      </div>
       <div class="game-board">
         <GameCell.render
           :for={cell <- @game.game_cells}

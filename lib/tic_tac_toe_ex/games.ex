@@ -76,15 +76,32 @@ defmodule TicTacToeEx.Games do
     |> Repo.all()
   end
 
+  def opposite_piece(:x_piece), do: :o_piece
+  def opposite_piece(:o_piece), do: :x_piece
+
+  def place_piece(%Game{} = game, cell_id, piece) do
+    Repo.transact(fn ->
+      game_cell = Enum.find(game.game_cells, & &1.cell_id == cell_id)
+      {:ok, game} = update_game(game, %{current_turn: opposite_piece(piece)})
+
+      if is_nil(game_cell) do
+        {:error, "cell_id not found"}
+      else
+        update_game_cell(game_cell, %{piece: piece})
+        {:ok, [game, game_cell]}
+      end
+    end)
+  end
+
   def reload_game_cells(%Game{} = game) do
     Repo.reload(game)
     |> Repo.preload([:game_cells, :players])
   end
 
-  def update_game_cell!(%GameCell{} = game_cell, attrs) do
+  def update_game_cell(%GameCell{} = game_cell, attrs) do
     game_cell
     |> GameCell.changeset(attrs)
-    |> Repo.update!()
+    |> Repo.update()
   end
 
   @doc """
