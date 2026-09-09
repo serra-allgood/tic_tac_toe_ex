@@ -3,6 +3,15 @@ defmodule TicTacToeExWeb.GameController do
 
   alias TicTacToeEx.{Games, Games.Matchmaker}
 
+  def create(conn, %{"invite_form" => invite_code}) do
+    user_id = get_user_id(conn)
+
+    with {:ok, game} <- Games.get_by_invite_code(invite_code),
+         {:ok, _} <- Matchmaker.match_or_create_game(game, user_id) do
+      redirect(conn, to: ~p"/games/#{game.id}/live?#{[game_id: game.id]}")
+    end
+  end
+
   def create(conn, %{"visibility" => visibility}) do
     visibility = String.to_existing_atom(visibility)
     user_id = get_user_id(conn)

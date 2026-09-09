@@ -8,9 +8,20 @@
 					</div>
 				</div>
 			</.modal>
-			<button class="button is-primary is-large is-fullwidth" phx-click={JS.add_class("is-active", to: "#modal-new-game")}>
-				New Game
-			</button>
+			<.modal id="modal-join-game">
+				<.form :let={f} for={@invite_form} action={~p"/games"} method="post">
+					<.input field={f[:invite_form]} type="text" class="input" label="Invite Code" />
+					<button type="submit" class="button is-primary">Join</button>
+				</.form>
+			</.modal>
+			<div class="buttons is-spaced">
+				<button class="button is-primary is-large is-fullwidth" phx-click={JS.add_class("is-active", to: "#modal-new-game")}>
+					New Game
+				</button>
+				<button class="button is-link is-large is-fullwidth" phx-click={JS.add_class("is-active", to: "#modal-join-game")}>
+					Join Game
+				</button>
+			</div>
 		</div>
 	</div>
 </Layouts.app>

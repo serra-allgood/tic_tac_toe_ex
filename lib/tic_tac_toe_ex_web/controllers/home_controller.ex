@@ -8,9 +8,10 @@ defmodule TicTacToeExWeb.HomeController do
     ]
 
     user_id = get_user_id(conn)
+    invite_form = %{invite_code: ""}
 
     conn
     |> put_session(:user_id, user_id)
-    |> render(:index, button_config: button_config, user_id: user_id)
+    |> render(:index, button_config: button_config, invite_form: invite_form, user_id: user_id)
   end
 end
