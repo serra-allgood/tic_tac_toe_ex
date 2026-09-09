@@ -42,7 +42,8 @@ defmodule TicTacToeExWeb.GameBoardLive do
 
   @impl true
   def handle_info({:game_over, piece}, socket) do
-    Phoenix.PubSub.unsubscribe(TicTacToeEx.PuSub, "game:" <> socket.assigns.game.id)
+    game = socket.assigns.game
+    Phoenix.PubSub.unsubscribe(TicTacToeEx.PubSub, "game:" <> game.id)
     {:noreply, assign(socket, :game_over, piece)}
   end
 

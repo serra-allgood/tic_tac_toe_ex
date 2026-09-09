@@ -56,6 +56,13 @@ defmodule TicTacToeEx.Games do
     |> Repo.all()
   end
 
+  def get_game(game_id) do
+    case Repo.get(Game, game_id) do
+      nil -> {:error, :not_found}
+      game -> {:ok, game}
+    end
+  end
+
   def get_game_state(game_id) do
     game =
       from(g in Game, where: g.id == ^game_id, preload: [:game_cells, :players])

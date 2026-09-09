@@ -33,7 +33,7 @@ defmodule TicTacToeEx.Games.LineServer do
   @impl true
   def handle_cast(
         {:place_piece, cell_id},
-        %{game_id: game_id, line: line, pieces: [piece | _rest]} = state
+        %{game_id: game_id, line: line} = state
       ) do
     state =
       if cell_id in @cell_ids_by_line[line] do
@@ -42,11 +42,24 @@ defmodule TicTacToeEx.Games.LineServer do
         state
       end
 
-    if length(state.pieces) == 3 and Enum.all?(state.pieces, &(&1 == piece)) do
-      Phoenix.PubSub.broadcast(TicTacToeEx.PubSub, "game:" <> game_id, {:game_over, piece})
-      {:stop, :game_over, state}
+    if length(state.pieces) == 3 and Enum.all?(state.pieces, &(&1 == hd(state.pieces))) do
+      Phoenix.PubSub.broadcast(
+        TicTacToeEx.PubSub,
+        "game:" <> game_id,
+        {:game_over, hd(state.pieces)}
+      )
+
+      {:stop, :shutdown, state}
     else
       {:noreply, state}
+    end
+  end
+
+  @impl true
+  def terminate(_reason, %{game_id: game_id}) do
+    case Games.get_game(game_id) do
+      {:ok, game} -> Games.delete_game(game)
+      _ -> :ok
     end
   end
 end
