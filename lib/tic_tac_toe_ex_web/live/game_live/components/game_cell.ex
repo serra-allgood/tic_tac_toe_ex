@@ -2,7 +2,6 @@ defmodule TicTacToeExWeb.GameLive.Components.GameCell do
   use TicTacToeExWeb, :html
 
   attr :id, :integer, required: true
-  attr :player_piece, :atom, required: true
   attr :piece, :atom
 
   def render(assigns) do
@@ -16,7 +15,6 @@ defmodule TicTacToeExWeb.GameLive.Components.GameCell do
         class="game-cell"
         phx-click="place_piece"
         phx-value-cell={@id}
-        phx-value-piece={@player_piece}
       />
     <% end %>
     """

@@ -46,6 +46,16 @@ defmodule TicTacToeEx.Games do
     end
   end
 
+  def get_cell_pieces(game_id, cell_ids) do
+    from(gc in GameCell,
+      where: gc.game_id == ^game_id,
+      where: gc.cell_id in ^cell_ids,
+      where: not is_nil(gc.piece),
+      select: gc.piece
+    )
+    |> Repo.all()
+  end
+
   def get_game_state(game_id) do
     game =
       from(g in Game, where: g.id == ^game_id, preload: [:game_cells, :players])
@@ -81,7 +91,7 @@ defmodule TicTacToeEx.Games do
 
   def place_piece(%Game{} = game, cell_id, piece) do
     Repo.transact(fn ->
-      game_cell = Enum.find(game.game_cells, & &1.cell_id == cell_id)
+      game_cell = Enum.find(game.game_cells, &(&1.cell_id == cell_id))
       {:ok, game} = update_game(game, %{current_turn: opposite_piece(piece)})
 
       if is_nil(game_cell) do
