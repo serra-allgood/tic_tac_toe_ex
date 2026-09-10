@@ -1,10 +1,8 @@
 defmodule TicTacToeEx.Games.MatchmakerTest do
   use TicTacToeEx.DataCase
 
-  alias TicTacToeEx.Games
-  alias TicTacToeEx.Games.Matchmaker
-  alias TicTacToeEx.Games.{Game, Player}
-  alias TicTacToeEx.Repo
+  alias TicTacToeEx.{Games, Repo}
+  alias TicTacToeEx.Games.{Game, Matchmaker, Player}
 
   import Ecto.Query
   import TicTacToeEx.GamesFixtures
