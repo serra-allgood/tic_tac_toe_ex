@@ -9,6 +9,16 @@ defmodule TicTacToeExWeb.GameController do
     with {:ok, game} <- Games.get_by_invite_code(invite_code),
          {:ok, _} <- Matchmaker.match_or_create_game(game, user_id) do
       redirect(conn, to: ~p"/games/#{game.id}/live?#{[game_id: game.id]}")
+    else
+      {:error, :not_found} ->
+        conn
+        |> put_flash(:error, "That invite code is invalid!")
+        |> redirect(to: ~p"/")
+
+      _ ->
+        conn
+        |> put_flash(:error, "Something went wrong while joining the game! Please try again.")
+        |> redirect(to: ~p"/")
     end
   end
 
@@ -29,12 +39,22 @@ defmodule TicTacToeExWeb.GameController do
                })
            end) do
       redirect(conn, to: ~p"/games/#{game.id}/live?#{[game_id: game.id]}")
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "Something went wrong while creating the game! Please try again.")
+        |> redirect(to: ~p"/")
     end
   end
 
   def show(conn, %{"id" => invite_code}) do
     with {:ok, game} <- Games.get_by_invite_code(invite_code) do
       redirect(conn, to: ~p"/games/#{game.id}/live?#{[game_id: game.id]}")
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "That invite code is invalid!")
+        |> redirect(to: ~p"/")
     end
   end
 end

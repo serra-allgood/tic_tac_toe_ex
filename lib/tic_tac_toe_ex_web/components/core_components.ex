@@ -31,6 +31,7 @@ defmodule TicTacToeExWeb.CoreComponents do
       else
         "modal"
       end
+
     assigns =
       assigns
       |> assign(:selector, "#" <> id)
@@ -86,21 +87,12 @@ defmodule TicTacToeExWeb.CoreComponents do
       id={@id}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
-      class="toast toast-top toast-end z-50"
+      class={["notification", "is-light", @kind == :info && "is-info", @kind == :error && "is-danger"]}
       {@rest}
     >
-      <div class={[
-        "alert w-80 sm:w-96 max-w-80 sm:max-w-96 text-wrap",
-        @kind == :info && "alert-info",
-        @kind == :error && "alert-error"
-      ]}>
-        <div>
-          <p :if={@title} class="font-semibold">{@title}</p>
-          <p>{msg}</p>
-        </div>
-        <div class="flex-1" />
-        <button type="button" class="group self-start cursor-pointer" aria-label={gettext("close")}></button>
-      </div>
+      <button class="delete" aria-label={gettext("close")}></button>
+      <h3 :if={@title} class="title is-3">{@title}</h3>
+      <p class="content">{msg}</p>
     </div>
     """
   end

@@ -9,7 +9,8 @@ defmodule TicTacToeExWeb.GameSetup do
   def on_mount(:fetch_game, %{"game_id" => game_id} = _params, _session, socket) do
     case Games.get_game_state(game_id) do
       {:error, _} ->
-        {:halt, redirect(socket, to: ~p"/not_found", status: 404)}
+        socket = put_flash(socket, :error, "A game with that ID was not found!")
+        {:halt, redirect(socket, to: ~p"/", status: 404)}
 
       {:ok, game} ->
         {:cont, assign(socket, :game, game)}
@@ -38,7 +39,8 @@ defmodule TicTacToeExWeb.GameSetup do
         {:cont, socket}
 
       true ->
-        {:halt, redirect(socket, to: ~p"/not_playing")}
+        socket = put_flash(socket, :error, "You are not playing in that game!")
+        {:halt, redirect(socket, to: ~p"/")}
     end
   end
 end

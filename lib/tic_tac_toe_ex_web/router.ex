@@ -18,8 +18,6 @@ defmodule TicTacToeExWeb.Router do
     pipe_through :browser
 
     get "/", HomeController, :index
-    get "/not_found", HomeController, :not_found
-    get "/not_playing", HomeController, :not_playing
 
     resources "/games", GameController, only: [:create, :show]
     live "/games/:game_id/live", GameBoardLive
