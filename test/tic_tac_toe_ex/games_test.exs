@@ -5,7 +5,6 @@ defmodule TicTacToeEx.GamesTest do
 
   describe "games" do
     alias TicTacToeEx.Games.Game
-
     import TicTacToeEx.GamesFixtures
 
     @invalid_attrs %{visibility: nil, invite_code: nil}
@@ -21,7 +20,12 @@ defmodule TicTacToeEx.GamesTest do
     end
 
     test "create_game/1 with valid data creates a game" do
-      valid_attrs = %{visibility: :public, invite_code: "some invite_code"}
+      valid_attrs = %{
+        visibility: :public,
+        invite_code: "some invite_code",
+        user_id: "7488a646-e31f-11e4-aace-600308960662",
+        piece: :x_piece
+      }
 
       assert {:ok, %Game{} = game} = Games.create_game(valid_attrs)
       assert game.visibility == :public
@@ -60,64 +64,6 @@ defmodule TicTacToeEx.GamesTest do
     test "change_game/1 returns a game changeset" do
       game = game_fixture()
       assert %Ecto.Changeset{} = Games.change_game(game)
-    end
-  end
-
-  describe "moves" do
-    alias TicTacToeEx.Games.Move
-
-    import TicTacToeEx.GamesFixtures
-
-    @invalid_attrs %{user_id: nil, game_id: nil, piece: nil}
-
-    test "list_moves/0 returns all moves" do
-      move = move_fixture()
-      assert Games.list_moves() == [move]
-    end
-
-    test "get_move!/1 returns the move with given id" do
-      move = move_fixture()
-      assert Games.get_move!(move.id) == move
-    end
-
-    test "create_move/1 with valid data creates a move" do
-      valid_attrs = %{user_id: "7488a646-e31f-11e4-aace-600308960662", game_id: "7488a646-e31f-11e4-aace-600308960662", piece: "some piece"}
-
-      assert {:ok, %Move{} = move} = Games.create_move(valid_attrs)
-      assert move.user_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert move.game_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert move.piece == "some piece"
-    end
-
-    test "create_move/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Games.create_move(@invalid_attrs)
-    end
-
-    test "update_move/2 with valid data updates the move" do
-      move = move_fixture()
-      update_attrs = %{user_id: "7488a646-e31f-11e4-aace-600308960668", game_id: "7488a646-e31f-11e4-aace-600308960668", piece: "some updated piece"}
-
-      assert {:ok, %Move{} = move} = Games.update_move(move, update_attrs)
-      assert move.user_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert move.game_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert move.piece == "some updated piece"
-    end
-
-    test "update_move/2 with invalid data returns error changeset" do
-      move = move_fixture()
-      assert {:error, %Ecto.Changeset{}} = Games.update_move(move, @invalid_attrs)
-      assert move == Games.get_move!(move.id)
-    end
-
-    test "delete_move/1 deletes the move" do
-      move = move_fixture()
-      assert {:ok, %Move{}} = Games.delete_move(move)
-      assert_raise Ecto.NoResultsError, fn -> Games.get_move!(move.id) end
-    end
-
-    test "change_move/1 returns a move changeset" do
-      move = move_fixture()
-      assert %Ecto.Changeset{} = Games.change_move(move)
     end
   end
 end

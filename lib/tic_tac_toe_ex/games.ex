@@ -164,15 +164,23 @@ defmodule TicTacToeEx.Games do
   """
   def create_game(attrs) do
     Repo.transact(fn ->
-      game = Repo.insert!(Game.changeset(%Game{}, attrs))
-
-      for cell_id <- 1..9 do
-        Repo.insert!(GameCell.changeset(%GameCell{}, %{game_id: game.id, cell_id: cell_id}))
+      with {:ok, game} <- Repo.insert(Game.changeset(%Game{}, attrs)),
+           {:ok, _cells} <- create_game_cells(game.id),
+           {:ok, _player} <-
+             Repo.insert(Player.changeset(%Player{}, Map.merge(attrs, %{game_id: game.id}))) do
+        {:ok, game}
+      else
+        {:error, changeset} -> Repo.rollback(changeset)
       end
+    end)
+  end
 
-      Repo.insert!(Player.changeset(%Player{}, Map.merge(attrs, %{game_id: game.id})))
-
-      {:ok, game}
+  defp create_game_cells(game_id) do
+    Enum.reduce_while(1..9, {:ok, []}, fn cell_id, {:ok, cells} ->
+      case Repo.insert(GameCell.changeset(%GameCell{}, %{game_id: game_id, cell_id: cell_id})) do
+        {:ok, cell} -> {:cont, {:ok, [cell | cells]}}
+        {:error, changeset} -> {:halt, {:error, changeset}}
+      end
     end)
   end
 

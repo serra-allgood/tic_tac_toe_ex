@@ -1,27 +1,37 @@
 <Layouts.app flash={@flash}>
-	<div class="columns is-centered">
-		<div class="column is-4">
-			<.modal id="modal-new-game">
-				<div class="columns buttons are-large">
-					<div class="column" :for={[visibility: visibility, color: color] <- @button_config}>
-						<.link href={~p"/games?visibility=#{visibility}"} method="post" class={"button #{color} is-fullwidth"}>{String.capitalize(visibility)}</.link>
-					</div>
-				</div>
-			</.modal>
-			<.modal id="modal-join-game">
-				<.form :let={f} for={@invite_form} action={~p"/games"} method="post">
-					<.input field={f[:invite_form]} type="text" class="input" label="Invite Code" />
-					<button type="submit" class="button is-primary">Join</button>
-				</.form>
-			</.modal>
-			<div class="buttons is-spaced">
-				<button class="button is-primary is-large is-fullwidth" phx-click={JS.add_class("is-active", to: "#modal-new-game")}>
-					New Game
-				</button>
-				<button class="button is-link is-large is-fullwidth" phx-click={JS.add_class("is-active", to: "#modal-join-game")}>
-					Join Game
-				</button>
-			</div>
-		</div>
-	</div>
+  <div class="columns is-centered">
+    <div class="column is-4">
+      <.modal id="modal-new-game">
+        <div class="columns buttons are-large">
+          <div :for={[visibility: visibility, color: color] <- @button_config} class="column">
+            <.link
+              href={~p"/games?visibility=#{visibility}"}
+              method="post"
+              class={"button #{color} is-fullwidth"}
+            >{String.capitalize(visibility)}</.link>
+          </div>
+        </div>
+      </.modal>
+      <.modal id="modal-join-game">
+        <.form :let={f} for={@invite_form} action={~p"/games"} method="post">
+          <.input field={f[:invite_form]} type="text" class="input" label="Invite Code" />
+          <button type="submit" class="button is-primary">Join</button>
+        </.form>
+      </.modal>
+      <div class="buttons is-spaced">
+        <button
+          class="button is-primary is-large is-fullwidth"
+          phx-click={JS.add_class("is-active", to: "#modal-new-game")}
+        >
+          New Game
+        </button>
+        <button
+          class="button is-link is-large is-fullwidth"
+          phx-click={JS.add_class("is-active", to: "#modal-join-game")}
+        >
+          Join Game
+        </button>
+      </div>
+    </div>
+  </div>
 </Layouts.app>

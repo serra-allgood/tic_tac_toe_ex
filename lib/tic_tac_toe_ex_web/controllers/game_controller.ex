@@ -22,7 +22,7 @@ defmodule TicTacToeExWeb.GameController do
     end
   end
 
-  def create(conn, %{"visibility" => visibility}) do
+  def create(conn, %{"visibility" => visibility}) when visibility in ["public", "private"] do
     visibility = String.to_existing_atom(visibility)
     user_id = get_user_id(conn)
 
@@ -45,6 +45,12 @@ defmodule TicTacToeExWeb.GameController do
         |> put_flash(:error, "Something went wrong while creating the game! Please try again.")
         |> redirect(to: ~p"/")
     end
+  end
+
+  def create(conn, _params) do
+    conn
+    |> put_flash(:error, "That game visibility is invalid!")
+    |> redirect(to: ~p"/")
   end
 
   def show(conn, %{"id" => invite_code}) do
