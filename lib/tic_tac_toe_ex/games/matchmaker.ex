@@ -14,8 +14,13 @@ defmodule TicTacToeEx.Games.Matchmaker do
 
   def match_or_create_game(%Game{} = game, user_id) do
     Repo.transact(fn ->
-      Games.create_player(%{game_id: game.id, user_id: user_id, piece: :o_piece})
-      Games.update_game(game, %{is_full: true})
+      with {:ok, _player} <-
+             Games.create_player(%{game_id: game.id, user_id: user_id, piece: :o_piece}),
+           {:ok, game} <- Games.update_game(game, %{is_full: true}) do
+        {:ok, game}
+      else
+        {:error, changeset} -> Repo.rollback(changeset)
+      end
     end)
   end
 end

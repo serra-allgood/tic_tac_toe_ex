@@ -12,7 +12,7 @@ defmodule TicTacToeEx.Games.Game do
     field :is_full, :boolean, default: false
     field :current_turn, Ecto.Enum, values: [x_piece: "x", o_piece: "o"], default: :x_piece
     has_many :game_cells, GameCell, preload_order: [:cell_id]
-		has_many :players, Player
+    has_many :players, Player
 
     timestamps(type: :utc_datetime)
   end
@@ -21,7 +21,7 @@ defmodule TicTacToeEx.Games.Game do
   def changeset(game, attrs) do
     game
     |> cast(attrs, [:visibility, :invite_code, :is_full, :current_turn])
-		|> cast_assoc(:players, with: &Player.changeset/2)
+    |> cast_assoc(:players, with: &Player.changeset/2)
     |> validate_required([:visibility])
   end
 end
