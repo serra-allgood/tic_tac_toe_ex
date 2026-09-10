@@ -2,7 +2,8 @@ defmodule TicTacToeExWeb.GameBoardLive do
   use TicTacToeExWeb, :live_view
 
   alias TicTacToeEx.{Games, GameSupervisor}
-  alias TicTacToeExWeb.{GameLive.Components.GameCell, GameSetup}
+  alias TicTacToeExWeb.GameSetup
+  alias TicTacToeExWeb.GameLive.Components.{GameCell, GameOverModal}
 
   on_mount {GameSetup, :fetch_game}
   on_mount {GameSetup, :validate_user}
@@ -74,16 +75,14 @@ defmodule TicTacToeExWeb.GameBoardLive do
           <span :if={@game.visibility == :public}> if you can't wait!</span>
         </div>
       </.modal>
-      <.modal :if={not is_nil(@game_over)} id="modal-game-over" active={true}>
-        <h3 class="title is-3">
-          <%= if @game_over == @player_piece do %>
-            Game Over, You Won!
-          <% else %>
-            Game Over, You Lost!
-          <% end %>
-        </h3>
-      </.modal>
-      <div class="notification is-centered">
+
+      <GameOverModal.render
+        :if={not is_nil(@game_over)}
+        game_over={@game_over}
+        player_piece={@player_piece}
+      />
+
+      <div :if={is_nil(@game_over)} class="notification is-centered">
         <h3 class="title is-3">
           <%= if @game.current_turn == @player_piece do %>
             Your turn!
@@ -92,6 +91,7 @@ defmodule TicTacToeExWeb.GameBoardLive do
           <% end %>
         </h3>
       </div>
+
       <div class="game-board">
         <GameCell.render
           :for={cell <- @game.game_cells}

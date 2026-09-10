@@ -42,16 +42,18 @@ defmodule TicTacToeEx.Games.LineServer do
         state
       end
 
-    if length(state.pieces) == 3 and Enum.all?(state.pieces, &(&1 == hd(state.pieces))) do
-      Phoenix.PubSub.broadcast(
-        TicTacToeEx.PubSub,
-        "game:" <> game_id,
-        {:game_over, hd(state.pieces)}
-      )
+    case game_over_state(state) do
+      false ->
+        {:noreply, state}
 
-      {:stop, :shutdown, state}
-    else
-      {:noreply, state}
+      game_state ->
+        Phoenix.PubSub.broadcast(
+          TicTacToeEx.PubSub,
+          "game:" <> game_id,
+          {:game_over, game_state}
+        )
+
+        {:stop, :shutdown, state}
     end
   end
 
@@ -61,5 +63,19 @@ defmodule TicTacToeEx.Games.LineServer do
       {:ok, game} -> Games.delete_game(game)
       _ -> :ok
     end
+  end
+
+  defp game_over_state(%{pieces: pieces}) when length(pieces) != 3, do: false
+
+  defp game_over_state(%{pieces: pieces, game_id: game_id}) do
+    winner(pieces) || tie(game_id)
+  end
+
+  defp winner(pieces) do
+    Enum.all?(pieces, &(&1 == hd(pieces))) && hd(pieces)
+  end
+
+  defp tie(game_id) do
+    length(Games.get_cell_pieces(game_id, 1..9)) == 9 && :none
   end
 end
