@@ -58,7 +58,7 @@ defmodule TicTacToeExWeb.Layouts do
             Home
           </a>
 
-          <div class="navbar-item has-dropdown is-hoverable">
+          <%!-- <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
               More
             </a>
@@ -78,10 +78,23 @@ defmodule TicTacToeExWeb.Layouts do
                 Report an issue
               </a>
             </div>
-          </div>
+          </div> --%>
         </div>
 
         <div class="navbar-end">
+          <div class="navbar-item">
+            <a
+              class="button is-link"
+              href="https://github.com/serra-allgood/tic_tac_toe_ex"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Source Code
+            </a>
+          </div>
+        </div>
+
+        <%!-- <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
               <a class="button is-primary">
@@ -92,7 +105,7 @@ defmodule TicTacToeExWeb.Layouts do
               </a>
             </div>
           </div>
-        </div>
+        </div> --%>
       </div>
     </nav>
 
