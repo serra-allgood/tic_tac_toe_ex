@@ -19,5 +19,6 @@ defmodule TicTacToeEx.Games.Player do
     player
     |> cast(attrs, [:game_id, :user_id, :piece])
     |> validate_required([:game_id, :user_id, :piece])
+    |> unique_constraint([:game_id, :piece])
   end
 end

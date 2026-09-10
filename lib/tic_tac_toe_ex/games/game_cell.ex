@@ -20,5 +20,7 @@ defmodule TicTacToeEx.Games.GameCell do
     game_cell
     |> cast(attrs, [:game_id, :cell_id, :user_id, :piece])
     |> validate_required([:game_id, :cell_id])
+    |> validate_inclusion(:cell_id, 1..9)
+    |> unique_constraint([:game_id, :cell_id])
   end
 end
