@@ -96,16 +96,23 @@ defmodule TicTacToeEx.Games do
   def opposite_piece(:x_piece), do: :o_piece
   def opposite_piece(:o_piece), do: :x_piece
 
-  def place_piece(%Game{} = game, cell_id, piece) do
+  def place_piece(%Game{} = game, cell_id, new_piece) do
     Repo.transact(fn ->
-      game_cell = Enum.find(game.game_cells, &(&1.cell_id == cell_id))
-      {:ok, game} = update_game(game, %{current_turn: opposite_piece(piece)})
-
-      if is_nil(game_cell) do
-        {:error, "cell_id not found"}
-      else
-        update_game_cell(game_cell, %{piece: piece})
+      with game_cell when not is_nil(game_cell) <-
+             Enum.find(game.game_cells, &(&1.cell_id == cell_id)),
+           occupying_piece when is_nil(occupying_piece) <- game_cell.piece,
+           {:ok, game} <- update_game(game, %{current_turn: opposite_piece(new_piece)}),
+           {:ok, game_cell} <- update_game_cell(game_cell, %{piece: new_piece}) do
         {:ok, [game, game_cell]}
+      else
+        nil ->
+          {:error, "cell_id not found"}
+
+        {:error, changeset} ->
+          {:error, changeset}
+
+        _ ->
+          {:error, "cell already occupied"}
       end
     end)
   end
